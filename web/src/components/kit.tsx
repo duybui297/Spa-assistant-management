@@ -108,12 +108,19 @@ export function Bars({ data, height = 220, colorOf, line }: {
 }) {
   const w = 720;
   const pad = { l: 8, r: 8, t: 14, b: 26 };
-  const vals = data.map((d) => d.value).concat((line ?? []).filter((x): x is number => x !== null));
+  // cột và đường dùng 2 thang đo riêng (đường số dư thường lớn hơn cột nhiều lần)
+  const vals = data.map((d) => d.value);
   const max = Math.max(1, ...vals);
   const min = Math.min(0, ...vals);
   const span = max - min || 1;
+  const lv = (line ?? []).filter((x): x is number => x !== null);
+  const lmax = Math.max(1, ...lv);
+  const lmin = Math.min(0, ...lv);
+  const lspan = lmax - lmin || 1;
   const bw = (w - pad.l - pad.r) / Math.max(1, data.length);
-  const y = (v: number) => pad.t + (height - pad.t - pad.b) * (1 - (v - min) / span);
+  const inner = height - pad.t - pad.b;
+  const y = (v: number) => pad.t + inner * (1 - (v - min) / span);
+  const yl = (v: number) => pad.t + inner * (1 - (v - lmin) / lspan);
   const labelEvery = Math.ceil(data.length / 12);
   return (
     <svg className="chart" viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" style={{ width: '100%', height }}>
@@ -134,7 +141,7 @@ export function Bars({ data, height = 220, colorOf, line }: {
       })}
       {line && (
         <polyline fill="none" stroke="var(--brand2)" strokeWidth={2}
-          points={line.map((v, i) => (v === null ? null : `${pad.l + i * bw + bw / 2},${y(v)}`)).filter(Boolean).join(' ')} />
+          points={line.map((v, i) => (v === null ? null : `${pad.l + i * bw + bw / 2},${yl(v)}`)).filter(Boolean).join(' ')} />
       )}
     </svg>
   );

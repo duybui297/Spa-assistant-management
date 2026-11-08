@@ -23,6 +23,12 @@ public class ErrorHandler {
         return ResponseEntity.badRequest().body(Map.of("error", String.valueOf(e.getMessage())));
     }
 
+    /** Đường dẫn không tồn tại (Render gọi thử "/", bot quét…) → 404, không ghi log lỗi. */
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<Map<String, String>> notFound(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Không tìm thấy"));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> other(Exception e) {
         log.error("Lỗi không mong muốn", e);

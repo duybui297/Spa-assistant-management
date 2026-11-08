@@ -111,3 +111,11 @@ input:disabled { opacity: .4; }
   .drv { grid-template-columns: 1fr auto; } .drv-bar { display: none; }
   .fld.inline { flex-direction: column; align-items: stretch; } .fld.inline input { width: 100%; }
 }
+
+/* sửa sau khi soát giao diện 08/11 */
+.callout.small { display: block; }
+.callout.small > svg { display: inline-block; vertical-align: -3px; margin-right: 6px; }
+.sl input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 99px; background: rgba(255,255,255,.12); outline: none; }
+.sl input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--brand); border: 3px solid #fff; cursor: pointer; }
+.sl input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--brand); border: 3px solid #fff; cursor: pointer; }
+.sl input[type=range]::-moz-range-track { height: 6px; border-radius: 99px; background: rgba(255,255,255,.12); }

@@ -116,7 +116,7 @@ function Alerts({ meta }: { meta: Meta | null }) {
         </>
       )}
       {res.data && !res.data.run && !res.loading && (
-        <div className="callout brand"><Icon name="spark" /> Bấm <b>Kiểm tra ngay</b> để đọc các đơn từ phần mềm Spa (chỉ đọc) và chấm hoa hồng theo bảng luật.</div>
+        <div className="callout brand"><Icon name="spark" /><span>Bấm <b>Kiểm tra ngay</b> để đọc các đơn từ phần mềm Spa (chỉ đọc) và chấm hoa hồng theo bảng luật.</span></div>
       )}
       {open && <ReviewModal row={open} onClose={() => setOpen(null)} onSaved={() => { setOpen(null); res.reload(); }} />}
     </>

@@ -22,7 +22,10 @@ export default function Expenses() {
       list.reload();
     } catch (e: any) { toast(e.message, 'info'); } finally { setBusy(false); }
   };
+  const [armed, setArmed] = useState<string | null>(null);
   const del = async (id: string) => {
+    if (armed !== id) { setArmed(id); setTimeout(() => setArmed((a) => (a === id ? null : a)), 3000); return; }
+    setArmed(null);
     try { await api(`/manual/expenses/${id}`, { method: 'DELETE' }); list.reload(); } catch (e: any) { toast(e.message, 'info'); }
   };
 
@@ -55,7 +58,7 @@ export default function Expenses() {
               { key: 'expenseDate', label: 'Ngày', type: 'date' }, { key: 'category', label: 'Loại' },
               { key: 'description', label: 'Ghi chú' }, { key: 'recurring', label: 'Hằng tháng', render: (e) => (e.recurring ? 'Có' : '') },
               { key: 'amount', label: 'Số tiền', type: 'money' },
-              { key: 'x', label: '', render: (e) => <button className="btn sm ghost" onClick={() => del(e.id)}>Xóa</button> }]} />
+              { key: 'x', label: '', render: (e) => <button className={`btn sm ${armed === e.id ? '' : 'ghost'}`} onClick={() => del(e.id)}>{armed === e.id ? 'Bấm lần nữa để xóa' : 'Xóa'}</button> }]} />
           </section>
         </>
       )}
