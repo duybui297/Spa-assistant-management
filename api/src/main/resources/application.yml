@@ -1,0 +1,66 @@
+# Mọi thông số lấy từ biến môi trường (HANDOFF 7.10). Đổi môi trường không phải sửa code.
+server:
+  port: ${PORT:8080}
+  compression:
+    enabled: true
+
+spring:
+  application:
+    name: spa-ai-api
+  main:
+    lazy-initialization: false
+  flyway:
+    enabled: false   # Flyway được cấu hình tay trong DataSourceConfig (2 schema)
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  timezone: Asia/Ho_Chi_Minh
+  cors-origins: ${APP_CORS_ORIGINS:http://localhost:5173}
+
+  auth:
+    username: ${APP_ADMIN_USERNAME:admin}
+    # BCrypt của mật khẩu. Tạo bằng: java -jar app.jar hash <mat-khau>
+    # Để trống thì dùng mật khẩu mặc định "yellow123" (chỉ dành cho V1).
+    password-hash: ${APP_ADMIN_PASSWORD_HASH:}
+
+  # Kết nối CÓ GHI: DB riêng của app AI (schema spa_ai)
+  ai-db:
+    url: ${APP_AI_DB_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=spa_ai}
+    username: ${APP_AI_DB_USER:postgres}
+    password: ${APP_AI_DB_PASSWORD:postgres}
+    max-pool-size: ${APP_AI_DB_POOL:3}
+
+  # Kết nối CHỈ ĐỌC: DB Spa (V1 = schema spa_mock trên Supabase, V2 = MySQL clinic_staging qua user SELECT-only)
+  spa-db:
+    url: ${APP_SPA_DB_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=spa_mock}
+    username: ${APP_SPA_DB_USER:postgres}
+    password: ${APP_SPA_DB_PASSWORD:postgres}
+    max-pool-size: ${APP_SPA_DB_POOL:2}
+    query-timeout-seconds: ${APP_SPA_QUERY_TIMEOUT_SEC:30}
+
+  # V1: tạo schema spa_mock + sinh dữ liệu giả bằng kết nối có ghi. V2: PHẢI để false.
+  mock:
+    enabled: ${APP_MOCK_ENABLED:false}
+    schema: ${APP_MOCK_SCHEMA:spa_mock}
+
+  commission:
+    # D.4 / 7.11: ngày áp dụng luật mới. Đơn trước ngày này không kiểm tra.
+    effective-date: ${APP_RULES_EFFECTIVE_DATE:2026-12-01}
+    # Chênh lệch cho phép (đồng) giữa tiền đã ghi và tiền đúng
+    tolerance-vnd: ${APP_COMMISSION_TOLERANCE_VND:1000}
+    # Căn cứ tính % cho dòng bán gói: LIST_PRICE_X_SESSIONS | ORDER_UNIT_PRICE
+    package-base: ${APP_COMMISSION_PACKAGE_BASE:LIST_PRICE_X_SESSIONS}
+    # Giá trị order_item_staff.staff_role được coi là Tư vấn (clinic-fe lưu "Tư vấn")
+    consultant-role-values: ${APP_CONSULTANT_ROLE_VALUES:Tư vấn,CONSULTANT}
+    # Giá trị commission.role của Spa dùng làm "% cấu hình cũ"
+    old-config-role: ${APP_OLD_CONFIG_ROLE:CONSULTANT}
+    # Số tháng lịch sử đọc để đếm "lần thứ mấy" (D.3: mọi lịch sử có trong phần mềm)
+    history-months: ${APP_HISTORY_MONTHS:120}
+
+logging:
+  level:
+    root: INFO
+    org.flywaydb: INFO

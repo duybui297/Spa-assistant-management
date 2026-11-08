@@ -1,0 +1,32 @@
+# Render Blueprint — V1 (Render Free, Docker). Các biến có sync:false phải nhập tay trên Render.
+services:
+  - type: web
+    name: spa-ai-api
+    runtime: docker
+    plan: free
+    rootDir: api
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_AI_DB_URL
+        sync: false   # jdbc:postgresql://aws-0-<region>.pooler.supabase.com:5432/postgres?currentSchema=spa_ai&sslmode=require
+      - key: APP_AI_DB_USER
+        sync: false   # postgres.<project-ref>
+      - key: APP_AI_DB_PASSWORD
+        sync: false
+      - key: APP_SPA_DB_URL
+        sync: false   # giống APP_AI_DB_URL nhưng currentSchema=spa_mock
+      - key: APP_SPA_DB_USER
+        sync: false
+      - key: APP_SPA_DB_PASSWORD
+        sync: false
+      - key: APP_MOCK_ENABLED
+        value: "true"
+      - key: APP_RULES_EFFECTIVE_DATE
+        value: "2026-09-01"   # V1 demo: lùi ngày để có đơn kiểm tra. Go-live thật: 2026-12-01
+      - key: APP_CORS_ORIGINS
+        sync: false   # https://<ten-du-an>.vercel.app,https://*.vercel.app
+      - key: APP_ADMIN_USERNAME
+        value: admin
+      - key: APP_ADMIN_PASSWORD_HASH
+        sync: false   # để trống = mật khẩu mặc định V1
